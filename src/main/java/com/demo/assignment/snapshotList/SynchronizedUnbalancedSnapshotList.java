@@ -1,21 +1,23 @@
 package com.demo.assignment.snapshotList;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedHashMap;
+import java.util.Comparator;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
-public class SynchronizedUnbalancedSnapshotList<E> extends ArrayList<E> implements SnapshotList<E> {
-    private int currentVersion = 0;
+public class SynchronizedUnbalancedSnapshotList<E> extends CopyOnWriteArrayList<E> implements SnapshotList<E> {
+    private final AtomicInteger currentVersion = new AtomicInteger(0);
 
     /*This map stores the version number as key and the end index for that version as the value.
      * */
-    private final LinkedHashMap<Integer, Integer> versions = new LinkedHashMap<>();
+    private final ConcurrentHashMap<Integer, Integer> versions = new ConcurrentHashMap<>();
 
     @Override
     public void dropPriorSnapshots(int version) {
-        if (version >= currentVersion) {
+        if (version > currentVersion.get()) {
             throw new InvalidVersionException("Expected version lesser than the current version");
         }
         for (int i = 1; i < version; i++) {
@@ -25,7 +27,7 @@ public class SynchronizedUnbalancedSnapshotList<E> extends ArrayList<E> implemen
 
     @Override
     public E getAtVersion(int index, int version) {
-        if (version > currentVersion) {
+        if (version > currentVersion.get()) {
             throw new InvalidVersionException("Queried version less than or equal to current version");
         }
         if (index > versions.get(version)) {
@@ -37,13 +39,16 @@ public class SynchronizedUnbalancedSnapshotList<E> extends ArrayList<E> implemen
 
     @Override
     public int snapshot() {
-        versions.put(++currentVersion, size() - 1);
-        return currentVersion;
+        //Check to not create multiple snapshots when no change has been made to the list.
+        if (versions.get(currentVersion.get()) == null || (versions.get(currentVersion.get()) < (size() - 1))) {
+            versions.put(currentVersion.incrementAndGet(), size() - 1);
+        }
+        return currentVersion.get();
     }
 
     @Override
     public int version() {
-        return currentVersion;
+        return currentVersion.get();
     }
 
     @Override
@@ -52,7 +57,7 @@ public class SynchronizedUnbalancedSnapshotList<E> extends ArrayList<E> implemen
     }
 
     /*Blocking all operations which can remove elements or randomly insert elements at some index.
-    * This list is supposed to grow only by appending elements.*/
+     * This list is supposed to grow only by appending elements.*/
     @Override
     public E set(int index, E element) {
         throw new UnsupportedOperationException("Changes to existing elements is not supported");
@@ -84,11 +89,6 @@ public class SynchronizedUnbalancedSnapshotList<E> extends ArrayList<E> implemen
     }
 
     @Override
-    protected void removeRange(int fromIndex, int toIndex) {
-        throw new UnsupportedOperationException("Removing elements is not supported");
-    }
-
-    @Override
     public boolean removeAll(Collection<?> c) {
         throw new UnsupportedOperationException("Removing elements is not supported");
     }
@@ -102,4 +102,10 @@ public class SynchronizedUnbalancedSnapshotList<E> extends ArrayList<E> implemen
     public void replaceAll(UnaryOperator<E> operator) {
         throw new UnsupportedOperationException("Replacing elements is not supported");
     }
+
+    @Override
+    public void sort(Comparator<? super E> c) {
+        throw new UnsupportedOperationException("Changes to existing elements is not supported");
+    }
+
 }
