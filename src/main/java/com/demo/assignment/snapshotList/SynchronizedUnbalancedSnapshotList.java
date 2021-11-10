@@ -1,7 +1,10 @@
 package com.demo.assignment.snapshotList;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
 public class SynchronizedUnbalancedSnapshotList<E> extends ArrayList<E> implements SnapshotList<E> {
     private int currentVersion = 0;
@@ -48,5 +51,55 @@ public class SynchronizedUnbalancedSnapshotList<E> extends ArrayList<E> implemen
         return "Latest Version : " + version() + ", List Elements : " + super.toString();
     }
 
+    /*Blocking all operations which can remove elements or randomly insert elements at some index.
+    * This list is supposed to grow only by appending elements.*/
+    @Override
+    public E set(int index, E element) {
+        throw new UnsupportedOperationException("Changes to existing elements is not supported");
+    }
 
+    @Override
+    public void add(int index, E element) {
+        throw new UnsupportedOperationException("Adding element at random location is not supported");
+    }
+
+    @Override
+    public E remove(int index) {
+        throw new UnsupportedOperationException("Removing elements is not supported");
+    }
+
+    @Override
+    public boolean remove(Object o) {
+        throw new UnsupportedOperationException("Removing elements is not supported");
+    }
+
+    @Override
+    public void clear() {
+        throw new UnsupportedOperationException("Removing elements is not supported");
+    }
+
+    @Override
+    public boolean addAll(int index, Collection<? extends E> c) {
+        throw new UnsupportedOperationException("Adding element at random location is not supported");
+    }
+
+    @Override
+    protected void removeRange(int fromIndex, int toIndex) {
+        throw new UnsupportedOperationException("Removing elements is not supported");
+    }
+
+    @Override
+    public boolean removeAll(Collection<?> c) {
+        throw new UnsupportedOperationException("Removing elements is not supported");
+    }
+
+    @Override
+    public boolean removeIf(Predicate<? super E> filter) {
+        throw new UnsupportedOperationException("Removing elements is not supported");
+    }
+
+    @Override
+    public void replaceAll(UnaryOperator<E> operator) {
+        throw new UnsupportedOperationException("Replacing elements is not supported");
+    }
 }
