@@ -38,7 +38,7 @@ public class SynchronizedUnbalancedSnapshotList<E> extends CopyOnWriteArrayList<
     }
 
     @Override
-    public int snapshot() {
+    public synchronized int snapshot() {
         //Check to not create multiple snapshots when no change has been made to the list.
         if (versions.get(currentVersion.get()) == null || (versions.get(currentVersion.get()) < (size() - 1))) {
             versions.put(currentVersion.incrementAndGet(), size() - 1);
