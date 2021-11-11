@@ -1,7 +1,5 @@
 package com.demo.assignment;
 
-import com.demo.assignment.snapshotList.SynchronizedUnbalancedSnapshotList;
-
 import java.util.List;
 import java.util.Scanner;
 

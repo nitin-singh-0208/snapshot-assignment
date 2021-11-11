@@ -1,6 +1,5 @@
 package com.demo.assignment;
 
-import com.demo.assignment.snapshotList.SynchronizedUnbalancedSnapshotList;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

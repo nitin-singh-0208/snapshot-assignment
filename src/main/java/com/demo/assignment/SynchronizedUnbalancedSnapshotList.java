@@ -1,4 +1,4 @@
-package com.demo.assignment.snapshotList;
+package com.demo.assignment;
 
 import java.util.Collection;
 import java.util.Comparator;
