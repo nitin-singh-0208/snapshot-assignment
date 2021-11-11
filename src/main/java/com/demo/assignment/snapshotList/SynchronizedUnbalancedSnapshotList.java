@@ -2,6 +2,7 @@ package com.demo.assignment.snapshotList;
 
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -50,6 +51,20 @@ public class SynchronizedUnbalancedSnapshotList<E> extends CopyOnWriteArrayList<
     @Override
     public int version() {
         return currentVersion.get();
+    }
+
+    public LinkedHashMap<Integer, List<E>> getVersionHistory() {
+        return getVersionHistory(currentVersion.get());
+    }
+
+    public LinkedHashMap<Integer, List<E>> getVersionHistory(Integer version) {
+        LinkedHashMap<Integer, List<E>> versionHistory = new LinkedHashMap<>();
+        for (int i = 1; i <= version; i++) {
+            if (versions.get(version) != null) {
+                versionHistory.put(i, subList(0, versions.get(i) + 1));
+            }
+        }
+        return versionHistory;
     }
 
     public List<E> getSnapshotAtVersion(int version) {

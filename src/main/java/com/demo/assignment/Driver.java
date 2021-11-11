@@ -16,8 +16,10 @@ public class Driver {
         System.out.println("3: Get at Index from Version");
         System.out.println("4: Show Latest Version Number");
         System.out.println("5: Show List at Version");
-        System.out.println("6: Show menu");
-        System.out.println("7: Program termination");
+        System.out.println("6: Show Entire Version History");
+        System.out.println("7: Show History from a particular version");
+        System.out.println("8: Show menu");
+        System.out.println("9: Program termination");
         lp:
         while (true) {
             System.out.print("Make your choice: ");
@@ -57,6 +59,14 @@ public class Driver {
                     }
                     break;
                 case 6:
+                    System.out.print("Version History : \n" + list.getVersionHistory());
+                    break;
+                case 7:
+                    System.out.print("Enter the version : \n");
+                    version = sc.nextInt();
+                    System.out.print("Version History : \n" + list.getVersionHistory(version));
+                    break;
+                case 8:
                     System.out.println("1: Add Element");
                     System.out.println("2: Create Snapshot");
                     System.out.println("3: Get at Index from Version");
@@ -65,7 +75,7 @@ public class Driver {
                     System.out.println("6: Show menu");
                     System.out.println("7: Program termination");
                     break;
-                case 7:
+                case 9:
                     break lp;
                 default:
                     System.out.println("Invalid choice! Please make a valid choice. \n\n");
