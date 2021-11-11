@@ -2,6 +2,7 @@ package com.demo.assignment.snapshotList;
 
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -31,7 +32,7 @@ public class SynchronizedUnbalancedSnapshotList<E> extends CopyOnWriteArrayList<
             throw new InvalidVersionException("Queried version less than or equal to current version");
         }
         if (index > versions.get(version)) {
-            throw new IndexOutOfBoundsException("Could not find index " + index + " in version " + version);
+            throw new IndexOutOfBoundsException("Could not find value at index " + index + " in version " + version);
         } else {
             return get(index);
         }
@@ -49,6 +50,17 @@ public class SynchronizedUnbalancedSnapshotList<E> extends CopyOnWriteArrayList<
     @Override
     public int version() {
         return currentVersion.get();
+    }
+
+    public List<E> getSnapshotAtVersion(int version) {
+        if (version > currentVersion.get()) {
+            throw new InvalidVersionException("Entered version " + version + " should be less than the latest version of list ");
+        }
+        if (versions.get(version) == null || versions.get(version) == 0) {
+            throw new InvalidVersionException("Version " + version + " not found");
+        }
+        return subList(0, versions.get(version) + 1);
+
     }
 
     @Override
