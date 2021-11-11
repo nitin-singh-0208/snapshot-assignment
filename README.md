@@ -13,9 +13,13 @@ version number of the list as key and the pointer to the last element of that ve
 Whenever `snapshot` method is invoked, version number is incremented and the last index of array is stored in map.
 Whenever we need the list at a particular versionwe need to get the sublist from 0 till end index (i.e the value part in map for that version).
 
-PRO: Works in multithreaded environment, uses less space by only storing pointers (delta) in the map.
-CON: If there are huge number of queries a lot of  new sublists would be returns hence memory usage would be increased in a heavy query based scenarios.
+**PRO**: Works in multithreaded environment, uses less space to store versions by only storing pointers (delta) in the map.
+**CON**: If there are huge number of queries a lot of  new sublists would be returns hence memory usage would be increased in a heavy query based scenarios.
+ and since it extends `CopyOnWriteArrayList` write operations are also slow due to its inherent nature of creating clone of underlying array when any insertion happens.
 
+##Things for Improvement
+* Efficient memory usage for query based scenarios
+* Data driven unit tests
 
 ## Steps to Run Project through IDE
 * Import the project as maven project in your favourite IDE (this project is developed in Intellij Idea)
